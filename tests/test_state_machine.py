@@ -2,8 +2,6 @@ import unittest
 import time
 
 from src.state_machine_impl import StateMachine, State, TRAFFIC_WAIT_TIME_S, X_SEC_WAIT_TIME_S
-import unittest
-import time
 
 class TestStateMachine(unittest.TestCase):
     
@@ -65,7 +63,9 @@ class TestStateMachine(unittest.TestCase):
 
     def test_x_sec_nav_to_wait_x_sec_and_back(self):
         # Start the machine and transition to X_SEC_NAV
+        self.machine.set_x_sec_navigating(True)
         self.machine.set_game_state(1)
+        self.machine.step()
         self.machine.set_x_sec(True)
         self.machine.step()
         # Trigger GhostBot and transition to WAIT_X_SEC
@@ -81,6 +81,7 @@ class TestStateMachine(unittest.TestCase):
     def test_x_sec_nav_to_lane_following_when_x_sec_navigating_false(self):
         # Start the machine and transition to X_SEC_NAV
         self.machine.set_game_state(1)
+        self.machine.step()
         self.machine.set_x_sec(True)
         self.machine.step()
         # Disable x_sec_navigating and verify transition to LANE_FOLLOWING
@@ -90,6 +91,9 @@ class TestStateMachine(unittest.TestCase):
     
     def test_game_over_no_transition(self):
         # Trigger QuackMan to directly enter GAME_OVER state
+        self.machine.set_game_state(1)
+        self.machine.step()
+        self.assertEqual(self.machine.state, State.LANE_FOLLOWING)
         self.machine.set_quack_man(True)
         self.machine.step()
         self.assertEqual(self.machine.state, State.GAME_OVER)

@@ -75,7 +75,7 @@ class StateMachine:
 
     def handle_wait_traffic(self):
         next_state = State.WAIT_TRAFFIC
-        if self.wait_start_time + TRAFFIC_WAIT_TIME_S > time.time():
+        if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.LANE_FOLLOWING
             self.wait_start_time = None
         if self.quack_man:
@@ -95,7 +95,7 @@ class StateMachine:
     
     def handle_x_sec_wait(self):
         next_state = State.WAIT_X_SEC
-        if self.wait_start_time + TRAFFIC_WAIT_TIME_S > time.time():
+        if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.LANE_FOLLOWING
             self.wait_start_time = None
         if self.quack_man:

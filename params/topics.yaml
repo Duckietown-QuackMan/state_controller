@@ -1,0 +1,12 @@
+pub: # Published topics
+  lane_following: /quack_man/lane_following
+  x_sec_go: /quack_man/x_sec_go
+  game_over: /quack_man/game_over
+
+sub: # Subscribed topics
+  game_state: /quack_man/game_state
+  ghost_bot: /quack_man/ghost_bot
+  ghost_bot_back: /quack_man/ghost_bot_back
+  quack_man: /quack_man/quack_man
+  x_sec: /quack_man/x_sec
+  x_sec_navigating: /quack_man/x_sec_navigating

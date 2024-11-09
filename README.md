@@ -42,3 +42,5 @@ The node will send out boolean flag commands on these channels
 - `lane_following`, if set to true the lane following node should start driving
 - `x_sec_go`, if set set to true the x-sec navigation should start navigating through the cross section
 - `game_over`, if set to true the QuackMan was detected and the game is over
+
+To run the test cases execute `python -m unittest discover tests` at the project root.

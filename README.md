@@ -27,6 +27,10 @@ lf -- QuackMan --> go
 wt -- QuackMan --> go
 go --> go
 ```
+:exclamation: add `game_state` (received from game master) transitions to game over
+
+:exclamation: add `game-won` state
+
 :warning: Consider transitions from lane following to wait states
 
 The node is listening on these channels for boolean flags for the inputs
@@ -44,3 +48,18 @@ The node will send out boolean flag commands on these channels
 - `game_over`, if set to true the QuackMan was detected and the game is over
 
 To run the test cases execute `python -m unittest discover tests` at the project root.
+
+### GameMasterConnector
+This node is responsible for the communication with the game master.
+It is reusable for the Ghostbots and the QuackMan, by starting it with the appropriate launch file.
+- `game_master_connector_quackmann.launch`
+- `game_master_connector_ghostbot.launch`
+
+How communication with the game master works, is implemented [here](https://github.com/Duckietown-QuackMan/game_master).
+
+This node will publish the game state as string on the topic `game_state`.
+The node listens on these channels
+- `all_chekpoints_collected`
+- `score_update`
+- `game_over`
+and informs the game master if all checkpoints were collected, the QuackMan achieved a new score, or the QuackMan was detected by a GhostBot and the game is over (when running on the appropriate bot type).

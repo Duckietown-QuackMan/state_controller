@@ -2,6 +2,7 @@ pub: # Published topics
   lane_following: /quack_man/lane_following
   x_sec_go: /quack_man/x_sec_go
   game_over: /quack_man/game_over
+  game_state: /quack_man/game_state
 
 sub: # Subscribed topics
   game_state: /quack_man/game_state
@@ -10,3 +11,6 @@ sub: # Subscribed topics
   quack_man: /quack_man/quack_man
   x_sec: /quack_man/x_sec
   x_sec_navigating: /quack_man/x_sec_navigating
+  all_checkpoints_collected: /quack_man/all_checkpoints_collected
+  score_update: /quack_man/score_update
+  game_over: /quack_man/game_over

@@ -3,6 +3,8 @@ pub: # Published topics
   x_sec_go: /quack_man/x_sec_go
   game_over: /quack_man/game_over
   game_state: /quack_man/game_state
+  score_update: /quack_man/score_update
+
 
 sub: # Subscribed topics
   game_state: /quack_man/game_state
@@ -14,3 +16,6 @@ sub: # Subscribed topics
   all_checkpoints_collected: /quack_man/all_checkpoints_collected
   score_update: /quack_man/score_update
   game_over: /quack_man/game_over
+  checkpoint: /quack_man/checkpoint
+
+

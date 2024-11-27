@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+    <!-- Define the paths to the parameter files -->
+    <arg name="topics_param_file_name" default="$(find state_controller)/params/topics.yaml"/>
+
+    <!-- Launch the exercise node, loading the specified parameter files (.yaml) -->
+    <node name="state_machine" pkg="state_controller" type="qm_state_machine.py" output="screen" required="true">
+        <rosparam command="load" file="$(arg topics_param_file_name)" ns="topics"/>
+    </node>
+    
+</launch>

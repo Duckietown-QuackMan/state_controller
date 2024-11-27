@@ -59,6 +59,7 @@ class StateMachine:
     def handle_idle(self):
         next_state = State.IDLE
         if self.start:
+            # TODO: check if quackman detected?
             next_state = State.LANE_FOLLOWING
         return next_state
 
@@ -80,6 +81,7 @@ class StateMachine:
             self.wait_start_time = None
         if self.quack_man:
             next_state = State.GAME_OVER
+        # TODO: check if ghost bot is still there, DEPENDENT ON PRIORITY LEVEL OF BOT
         return next_state
 
     def handle_x_sec_nav(self):

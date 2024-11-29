@@ -1,6 +1,7 @@
 from typing import Callable
 from websocket import WebSocketApp
 import rel 
+import threading
 import json
 
 class GameMasterConnector:
@@ -14,8 +15,10 @@ class GameMasterConnector:
                                on_open=self.on_open)
         print("Connected to Game Master")
         self.ws.run_forever(dispatcher=rel, reconnect=5)
-        rel.signal(2,rel.abort)
-        rel.dispatch()
+        # rel.signal(2,rel.abort)
+        # rel.dispatch()
+        rel_thread = threading.Thread(target=rel.dispatch, daemon=True)
+        rel_thread.start()
         print("Running connection")
 
     def send_quackman_detected(self):

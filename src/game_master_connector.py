@@ -9,13 +9,18 @@ from game_master_connector_impl import GameMasterConnector
 class GameMasterConnectorNode:
 
     def __init__(self):
+        rospy.init_node("game_master_connector", anonymous=True)
+        print("Game Master Connector Node Initialised")
+
         self.setup_params()
         self.vehicle_name = os.getenv("VEHICLE_NAME")
 
         self.game_master_connector = GameMasterConnector(self.game_state_update_cb, self.vehicle_name, f"{self.game_master_url}/{self.bot_type}")
-
+        
         self.setup_publishers_and_subscribers()
-        self.name_pub_game_state.publish(String("RUNNING"))
+        print("Game Master Connector Node Setup Complete")
+        self.pub_game_state.publish(String("RUNNING"))
+        print("Game State forcely Published: RUNNING")
     
     def print_info(self) -> None:
         print()
@@ -94,7 +99,7 @@ class GameMasterConnectorNode:
 
 
 if __name__ == "__main__":
-    rospy.init_node("game_master_connector", anonymous=True)
+    # rospy.init_node("game_master_connector", anonymous=True)
 
     game_master_connector = GameMasterConnectorNode()
     game_master_connector.print_info()

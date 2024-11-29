@@ -55,11 +55,12 @@ It is reusable for the Ghostbots and the QuackMan, by starting it with the appro
 - `game_master_connector_quackmann.launch`
 - `game_master_connector_ghostbot.launch`
 
-How communication with the game master works, is implemented [here](https://github.com/Duckietown-QuackMan/game_master).
+How communication with the game master works, is documented [here](https://github.com/Duckietown-QuackMan/game_master).
 
 This node will publish the game state as string on the topic `game_state`.
 The node listens on these channels
 - `all_chekpoints_collected`
 - `score_update`
+- `checkpoint_timeout`
 - `game_over`
 and informs the game master if all checkpoints were collected, the QuackMan achieved a new score, or the QuackMan was detected by a GhostBot and the game is over (when running on the appropriate bot type).

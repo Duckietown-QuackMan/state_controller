@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Bool, Int32
+from std_msgs.msg import Bool, Int32, String
 
 from qm_state_machine_impl import QMStateMachine
 
@@ -17,6 +17,7 @@ class QMStateMachineNode:
         step_timer = rospy.Timer(rospy.Duration(0.1), self.step)
 
     def step(self, _event):
+        print("state of state_machine:", self.state_machine.state)
         outputs = self.state_machine.step()
         # TO ASK: 
         # - I think this may be redundant, as we can simply publish the state of the game in the cb_checkpoint
@@ -70,7 +71,7 @@ class QMStateMachineNode:
         """
         Setup the ROS publishers and subscribers for the node.
         """
-        self.sub_game_state       = rospy.Subscriber(self.name_sub_game_state,      Bool,   self.state_machine.set_game_state,      queue_size=10)
+        self.sub_game_state       = rospy.Subscriber(self.name_sub_game_state,      String,  self.game_state_cb,      queue_size=10)
         self.sub_checkpoint       = rospy.Subscriber(self.name_sub_checkpoint,      Int32,  self.cb_checkpoint,                     queue_size=10)
 
         self.pub_score_updates = rospy.Publisher(self.name_pub_score_updates,       Int32,                                          queue_size=10)
@@ -98,7 +99,9 @@ class QMStateMachineNode:
     # TODO: need to find a way to publish the game over in case of no checkpoints collected within time frame
     # RESOLVED: we can simply do this above, upon call of the step function
 
-
+    def game_state_cb(self, msg: String) -> None:
+        print(f"Game state update: {msg.data}")
+        self.state_machine.set_game_state(msg.data)
 
 
 if __name__ == "__main__":

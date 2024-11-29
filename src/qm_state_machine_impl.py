@@ -87,8 +87,8 @@ class QMStateMachine:
         next_state = State.GAME_WON
         return next_state  
     
-    def set_game_state(self, val: int) -> None:
-        self.start = val == 1
+    def set_game_state(self, val: str) -> None:
+        self.start = val == "RUNNING"
 
     # TODO: 
     # - if we change the message type to stamped int and bool, we could use 

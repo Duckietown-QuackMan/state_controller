@@ -2,7 +2,7 @@
 import os
 
 import rospy
-from std_msgs import Bool, Int, String
+from std_msgs.msg import Bool, Int32, String
 
 from game_master_connector_impl import GameMasterConnector
 
@@ -15,6 +15,7 @@ class GameMasterConnectorNode:
         self.game_master_connector = GameMasterConnector(self.game_state_update_cb, self.vehicle_name, f"{self.game_master_url}/{self.bot_type}")
 
         self.setup_publishers_and_subscribers()
+        self.name_pub_game_state.publish(String("RUNNING"))
     
     def print_info(self) -> None:
         print()
@@ -43,7 +44,9 @@ class GameMasterConnectorNode:
             return param
         
         # bot type config, either 'quackman' or 'ghostbot'
-        self.bot_type = get_rosparam("bot_type")
+        # self.bot_type = get_rosparam("~bot_type")
+        self.bot_type = rospy.get_param("~bot_type")
+
 
         # game master config
         self.game_master_url = get_rosparam("~game_master/url")
@@ -61,15 +64,17 @@ class GameMasterConnectorNode:
         Setup the ROS publishers and subscribers for the node
         """
         self.sub_all_checkpoints_collected = rospy.Subscriber(self.name_sub_all_checkpoints_collected, Bool, self.all_chekpoints_collected_cb, queue_size=10)
-        self.sub_score_update = rospy.Subscriber(self.name_sub_score_update, Int, self.score_update_cb, queue_size=10)
+        self.sub_score_update = rospy.Subscriber(self.name_sub_score_update, Int32, self.score_update_cb, queue_size=10)
         self.sub_checkpoint_timeout = rospy.Subscriber(self.name_sub_checkpoint_timeout, Bool, self.checkpoint_timeout_cb, queue_size=10)
         self.sub_game_over = rospy.Subscriber(self.name_sub_game_over, Bool, self.game_over_cb, queue_size=10)
 
         self.pub_game_state = rospy.Publisher(self.name_pub_game_state, String, queue_size=10)
     
     def game_state_update_cb(self, game_state: str) -> None:
+        print(f"Game state update: {game_state}")
         msg: String = String()
         msg.data = game_state
+        print("self.name_pub_game_state",self.name_pub_game_state)
         self.pub_game_state.publish(msg)
     
     def all_chekpoints_collected_cb(self, msg: Bool) -> None:
@@ -80,7 +85,7 @@ class GameMasterConnectorNode:
         if msg.data:
             self.game_master_connector.send_checkpoint_timeout()
     
-    def score_update_cb(self, msg: Int) -> None:
+    def score_update_cb(self, msg: Int32) -> None:
         self.game_master_connector.send_score(msg.data)
 
     def game_over_cb(self, msg: Bool) -> None:

@@ -4,6 +4,8 @@ pub: # Published topics
   game_over: /quack_man/game_over
   game_state: /quack_man/game_state
   score_update: /quack_man/score_update
+  all_checkpoints_collected: /quack_man/all_checkpoints_collected
+
 
 
 sub: # Subscribed topics

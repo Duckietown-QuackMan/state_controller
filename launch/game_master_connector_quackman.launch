@@ -4,12 +4,14 @@
     <!-- Define the paths to the parameter files -->
     <arg name="topics_param_file_name" default="$(find state_controller)/params/topics.yaml"/>
     <arg name="game_master_param_file_name" default="$(find state_controller)/params/game_master.yaml"/>
+    
+    <param name="~bot_type" value="quackman" />
 
     <!-- Launch the exercise node, loading the specified parameter files (.yaml) -->
     <node name="game_master_connector" pkg="state_controller" type="game_master_connector.py" output="screen" required="true">
         <rosparam command="load" file="$(arg topics_param_file_name)" ns="topics"/>
         <rosparam command="load" file="$(arg game_master_param_file_name)" ns="game_master"/>
-        <param name="bot_type" value="quackman" />
+        <!-- <rosparam name="bot_type" value="quackman" /> -->
     </node>
     
 </launch>

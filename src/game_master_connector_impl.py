@@ -34,9 +34,19 @@ class GameMasterConnector:
     def send_all_checkpoints_collected(self):
         msg_dict = {
             "bot": self.bot_name,
-            "type": "CHECKPOINT"
+            "type": "CHECKPOINT",
             "data": {
                 "all_collected": True
+            }
+        }
+        self.ws.send(json.dumps(msg_dict))
+
+    def send_checkpoint_timeout(self):
+        msg_dict = {
+            "bot": self.bot_name,
+            "type": "TIMEOUT",
+            "data": {
+                "checkpointTimeout": True
             }
         }
         self.ws.send(json.dumps(msg_dict))

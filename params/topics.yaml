@@ -17,5 +17,6 @@ sub: # Subscribed topics
   score_update: /quack_man/score_update
   game_over: /quack_man/game_over
   checkpoint: /quack_man/checkpoint
+  checkpoint_timeout: /quack_man/checkpoint_timeout
 
 

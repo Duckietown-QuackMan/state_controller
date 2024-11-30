@@ -13,10 +13,11 @@ class StateMachineNode:
 
         self.setup_params()
         self.setup_publishers_and_subscribers()
-        step_timer = rospy.Timer(rospy.Duration(0.1), self.step)
+        step_timer = rospy.Timer(rospy.Duration(1), self.step)
 
     def step(self, _event):
         outputs = self.state_machine.step()
+        print(outputs["lf"], outputs["x-sec-go"], outputs["game-over"])
         self.pub_lane_following.publish(Bool(outputs["lf"]))
         self.pub_x_sec_go.publish(Bool(outputs["x-sec-go"]))
         self.pub_game_over.publish(Bool(outputs["game-over"]))

@@ -28,6 +28,7 @@ class StateMachine:
     
 
     def step(self):
+        print("State: ", self.state)
         if self.state == State.IDLE:
             self.state = self.handle_idle()
         elif self.state == State.LANE_FOLLOWING:
@@ -72,6 +73,7 @@ class StateMachine:
             self.wait_start_time = time.time()
         if self.quack_man:
             next_state = State.GAME_OVER
+        print("Next: ", next_state)
         return next_state
 
     def handle_wait_traffic(self):
@@ -109,23 +111,23 @@ class StateMachine:
         return next_state  
 
     
-    def set_game_state(self, val: int) -> None:
-        self.start = val == 1
+    def set_game_state(self, val) -> None:
+        self.start = val.data 
 
-    def set_ghost_bot(self, val: bool) -> None:
-        self.ghost_bot = val
+    def set_ghost_bot(self, val) -> None:
+        self.ghost_bot = val.data
 
-    def set_ghost_bot_b(self, val: bool) -> None:
-        self.ghost_bot_b = val
+    def set_ghost_bot_b(self, val) -> None:
+        self.ghost_bot_b = val.data
 
-    def set_quack_man(self, val: bool) -> None:
-        self.quack_man = val
+    def set_quack_man(self, val) -> None:
+        self.quack_man = val.data
 
-    def set_x_sec(self, val: bool) -> None:
-        self.x_sec = val
+    def set_x_sec(self, val) -> None:
+        self.x_sec = val.data
     
-    def set_x_sec_navigating(self, val: bool) -> None:
-        self.x_sec_navigating = val
+    def set_x_sec_navigating(self, val) -> None:
+        self.x_sec_navigating = val.data
 
     
 

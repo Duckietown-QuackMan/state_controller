@@ -16,6 +16,7 @@ X_SEC_WAIT_TIME_S = 5
 class StateMachine:
     def __init__(self):
         self.start: bool = False
+        self.game_over: bool = False
         self.ghost_bot: bool = False
         self.ghost_bot_b: bool = False
         self.quack_man: bool = False
@@ -70,7 +71,7 @@ class StateMachine:
         if self.ghost_bot_b:
             next_state = State.WAIT_TRAFFIC
             self.wait_start_time = time.time()
-        if self.quack_man:
+        if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         return next_state
 
@@ -79,7 +80,7 @@ class StateMachine:
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.LANE_FOLLOWING
             self.wait_start_time = None
-        if self.quack_man:
+        if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         # TODO: check if ghost bot is still there, DEPENDENT ON PRIORITY LEVEL OF BOT
         return next_state
@@ -91,7 +92,7 @@ class StateMachine:
             self.wait_start_time = time.time()
         if not self.x_sec_navigating:
             next_state = State.LANE_FOLLOWING
-        if self.quack_man:
+        if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         return next_state
     
@@ -100,7 +101,7 @@ class StateMachine:
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.LANE_FOLLOWING
             self.wait_start_time = None
-        if self.quack_man:
+        if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         return next_state
 
@@ -110,7 +111,10 @@ class StateMachine:
 
     
     def set_game_state(self, val: str) -> None:
-        self.start = val == "RUNNING"
+        if val == "RUNNING":
+            self.start = True
+        elif val == "GAME_OVER":
+            self.game_over = True
 
     def set_ghost_bot(self, val: bool) -> None:
         self.ghost_bot = val

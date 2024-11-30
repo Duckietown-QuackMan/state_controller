@@ -109,8 +109,8 @@ class StateMachine:
         return next_state  
 
     
-    def set_game_state(self, val: int) -> None:
-        self.start = val == 1
+    def set_game_state(self, val: str) -> None:
+        self.start = val == "RUNNING"
 
     def set_ghost_bot(self, val: bool) -> None:
         self.ghost_bot = val

@@ -13,6 +13,7 @@ wx(wait x-sec)
 xn(x-sec-nav)
 lf(lane-following)
 go(game-over)
+gw(game-won)
 i(idle)
 wt(wait-traffic)
 lf -- "GhostBot b" --> wt --> lf
@@ -26,6 +27,12 @@ i -- QuackMan, GameOver --> go
 lf -- QuackMan, GameOver --> go
 wt -- QuackMan, GameOver --> go
 go --> go
+wx -- GameWon --> gw
+xn -- GameWon --> gw
+i -- GameWon --> gw
+lf -- GameWon --> gw
+wt -- GameWon --> gw
+gw --> gw
 ```
 :exclamation: add `game_state` (received from game master) transitions to game over
 

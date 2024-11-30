@@ -8,6 +8,7 @@ class State(IntEnum):
     X_SEC_NAV = 3
     WAIT_X_SEC = 4
     GAME_OVER = 5
+    GAME_WON = 6
 
 
 TRAFFIC_WAIT_TIME_S = 5
@@ -17,6 +18,7 @@ class StateMachine:
     def __init__(self):
         self.start: bool = False
         self.game_over: bool = False
+        self.game_won: bool = False
         self.ghost_bot: bool = False
         self.ghost_bot_b: bool = False
         self.quack_man: bool = False
@@ -41,6 +43,8 @@ class StateMachine:
             self.state = self.handle_x_sec_wait()
         elif self.state == State.GAME_OVER:
             self.state = self.handle_game_over()
+        elif self.state == State.GAME_WON:
+            self.state = self.handle_game_won()
         return self.get_outputs()
     
     def get_outputs(self):
@@ -56,6 +60,8 @@ class StateMachine:
             return {"lf": False, "x-sec-go": False, "game-over": False}
         if self.state == State.GAME_OVER:
             return {"lf": False, "x-sec-go": False, "game-over": True}
+        if self.state == State.GAME_WON:
+            return {"lf": False, "x-sec-go": False, "game-over": False}
     
     def handle_idle(self):
         next_state = State.IDLE
@@ -73,6 +79,8 @@ class StateMachine:
             self.wait_start_time = time.time()
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
+        if self.game_won:
+            next_state = State.GAME_WON
         return next_state
 
     def handle_wait_traffic(self):
@@ -82,6 +90,8 @@ class StateMachine:
             self.wait_start_time = None
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
+        if self.game_won:
+            next_state = State.GAME_WON
         # TODO: check if ghost bot is still there, DEPENDENT ON PRIORITY LEVEL OF BOT
         return next_state
 
@@ -94,6 +104,8 @@ class StateMachine:
             next_state = State.LANE_FOLLOWING
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
+        if self.game_won:
+            next_state = State.GAME_WON
         return next_state
     
     def handle_x_sec_wait(self):
@@ -103,18 +115,25 @@ class StateMachine:
             self.wait_start_time = None
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
+        if self.game_won:
+            next_state = State.GAME_WON
         return next_state
 
     def handle_game_over(self):
         next_state = State.GAME_OVER
-        return next_state  
+        return next_state
 
-    
+    def handle_game_won(self):
+        next_state = State.GAME_WON
+        return next_state
+
     def set_game_state(self, val: str) -> None:
         if val == "RUNNING":
             self.start = True
         elif val == "GAME_OVER":
             self.game_over = True
+        elif val == "GAME_WON":
+            self.game_won = True
 
     def set_ghost_bot(self, val: bool) -> None:
         self.ghost_bot = val

@@ -13,7 +13,6 @@ class GameMasterConnectorNode:
         print("Game Master Connector Node Initialised")
 
         self.setup_params()
-        self.vehicle_name = os.getenv("VEHICLE_NAME")
 
         self.game_master_connector = GameMasterConnector(self.game_state_update_cb, self.vehicle_name, f"{self.game_master_url}/{self.bot_type}")
         
@@ -47,6 +46,8 @@ class GameMasterConnectorNode:
                 rospy.logerr(txt_error)
                 raise KeyError(txt_error)
             return param
+
+        self.vehicle_name = get_rosparam("~vehicle_name")
         
         # bot type config, either 'quackman' or 'ghostbot'
         # self.bot_type = get_rosparam("~bot_type")

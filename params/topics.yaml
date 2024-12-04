@@ -5,6 +5,8 @@ pub: # Published topics
   game_state: /quack_man/game_state
   score_update: /quack_man/score_update
   all_checkpoints_collected: /quack_man/all_checkpoints_collected
+  checkpoint_timeout: /quack_man/checkpoint_timeout
+
 
 
 

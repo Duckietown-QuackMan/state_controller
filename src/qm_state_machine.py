@@ -22,7 +22,7 @@ class QMStateMachineNode:
         # TO ASK: 
         # - I think this may be redundant, as we can simply publish the state of the game in the cb_checkpoint
         # RESOLVED:I think that done this way is fine, as we can more easily differentiate parts
-        self.pub_game_over.publish(Bool(outputs["game-over"]))
+        self.pub_cp_timeout.publish(Bool(outputs["game-over"]))
         self.pub_all_checkpoints_collected.publish(Bool(outputs["game-won"]))
 
         # TODO: find a way to cleanly stop the game
@@ -65,7 +65,7 @@ class QMStateMachineNode:
 
         self.name_pub_score_updates = get_rosparam("~topics/pub/score_update")
         self.name_pub_all_checkpoints_collected = get_rosparam("~topics/pub/all_checkpoints_collected")
-        self.name_pub_game_over = get_rosparam("~topics/pub/game_over")
+        self.name_pub_cp_timeout = get_rosparam("~topics/pub/checkpoint_timeout")
         
     def setup_publishers_and_subscribers(self) -> None:
         """
@@ -76,11 +76,11 @@ class QMStateMachineNode:
 
         self.pub_score_updates = rospy.Publisher(self.name_pub_score_updates,       Int32,                                          queue_size=10)
         self.pub_all_checkpoints_collected = rospy.Publisher(self.name_pub_all_checkpoints_collected,       Bool,                   queue_size=10)
-        self.pub_game_over      = rospy.Publisher(self.name_pub_game_over,          Bool,                                           queue_size=10)
+        self.pub_cp_timeout      = rospy.Publisher(self.name_pub_cp_timeout,          Bool,                                           queue_size=10)
 
 
     def cb_checkpoint(self, msg: int) -> None:
-        self.state_machine.set_cp_status(msg)
+        self.state_machine.set_cp_status(msg.data)
         # Publishe the score, if updated
         # TOASK: - do we want to publish the score this way, or through the step function?
         if self.score != self.state_machine.get_score():
@@ -100,7 +100,6 @@ class QMStateMachineNode:
     # RESOLVED: we can simply do this above, upon call of the step function
 
     def game_state_cb(self, msg: String) -> None:
-        print(f"Game state update: {msg.data}")
         self.state_machine.set_game_state(msg.data)
 
 

@@ -80,7 +80,6 @@ class GameMasterConnectorNode:
         print(f"Game state update: {game_state}")
         msg: String = String()
         msg.data = game_state
-        print("self.name_pub_game_state",self.name_pub_game_state)
         self.pub_game_state.publish(msg)
     
     def all_chekpoints_collected_cb(self, msg: Bool) -> None:

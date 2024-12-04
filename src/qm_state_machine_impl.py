@@ -73,6 +73,10 @@ class QMStateMachine:
     
     def handle_cp_detection(self):
         next_state = State.CP_DETECTION
+        curr_time = time.time()
+        # check if the time elapsed since the last checkpoint detection is greater than the threshold
+        if self.score!= 0 and curr_time - self.last_cp_time > TIME_DELTA_CHECKPOINTS:
+            self.cp_delta_time_elapsed = True 
         if self.cp_delta_time_elapsed:
             next_state = State.GAME_OVER
         elif self.all_cp_detected:
@@ -102,7 +106,7 @@ class QMStateMachine:
     def set_cp_status(self, val: int) -> None:
         curr_time = time.time()
         # check if the time elapsed since the last checkpoint detection is greater than the threshold
-        if curr_time - self.last_cp_time > TIME_DELTA_CHECKPOINTS:
+        if self.score!= 0 and curr_time - self.last_cp_time > TIME_DELTA_CHECKPOINTS:
             self.cp_delta_time_elapsed = True    
         # discovered a new checkpoint, within the time window
         elif val not in self.checkpoints:

@@ -46,7 +46,7 @@ class GameMasterConnector:
             "bot": self.bot_name,
             "type": "CHECKPOINT",
             "data": {
-                "all_collected": True
+                "allCheckpointsCollected": True
             }
         }
         self.ws.send(json.dumps(msg_dict))

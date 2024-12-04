@@ -14,7 +14,7 @@ class QMStateMachineNode:
 
         self.setup_params()
         self.setup_publishers_and_subscribers()
-        step_timer = rospy.Timer(rospy.Duration(0.1), self.step)
+        step_timer = rospy.Timer(rospy.Duration(1), self.step)
 
     def step(self, _event):
         print("state of state_machine:", self.state_machine.state)
@@ -22,6 +22,7 @@ class QMStateMachineNode:
         # TO ASK: 
         # - I think this may be redundant, as we can simply publish the state of the game in the cb_checkpoint
         # RESOLVED:I think that done this way is fine, as we can more easily differentiate parts
+        # TODO: - ONLY PUBLISH IF DIFFERENT FROM BEFORE
         self.pub_cp_timeout.publish(Bool(outputs["game-over"]))
         self.pub_all_checkpoints_collected.publish(Bool(outputs["game-won"]))
 

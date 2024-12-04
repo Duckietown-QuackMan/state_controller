@@ -18,8 +18,7 @@ class GameMasterConnectorNode:
         
         self.setup_publishers_and_subscribers()
         print("Game Master Connector Node Setup Complete")
-        self.pub_game_state.publish(String("RUNNING"))
-        print("Game State forcely Published: RUNNING")
+
     
     def print_info(self) -> None:
         print()

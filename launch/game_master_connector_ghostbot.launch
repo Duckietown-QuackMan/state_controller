@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
+    <arg name="vehicle_name" default="$(env VEHICLE_NAME)" />
 
     <!-- Define the paths to the parameter files -->
     <arg name="topics_param_file_name" default="$(find state_controller)/params/topics.yaml"/>
     <arg name="game_master_param_file_name" default="$(find state_controller)/params/game_master.yaml"/>
 
-    <param name="~bot_type" value="quackman" />
+    <param name="~bot_type" value="ghostbot" />
     <param name="vehicle_name" value="$(arg vehicle_name)" />
 
     <!-- Launch the node, loading the specified parameter files (.yaml) -->

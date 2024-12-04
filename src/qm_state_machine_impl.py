@@ -8,7 +8,7 @@ class State(IntEnum):
     GAME_WON = 3
 
 # TODO: move these to a config file
-TIME_DELTA_CHECKPOINTS = 30
+TIME_DELTA_CHECKPOINTS = 120
 TOTAL_CHECKPOINTS = 5
 
 

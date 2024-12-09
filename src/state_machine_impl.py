@@ -31,6 +31,7 @@ class StateMachine:
     
 
     def step(self):
+        print(self.state)
         if self.state == State.IDLE:
             self.state = self.handle_idle()
         elif self.state == State.LANE_FOLLOWING:
@@ -87,6 +88,7 @@ class StateMachine:
         next_state = State.WAIT_TRAFFIC
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.LANE_FOLLOWING
+            self.ghost_bot_b = False
             self.wait_start_time = None
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
@@ -112,6 +114,7 @@ class StateMachine:
         next_state = State.WAIT_X_SEC
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.LANE_FOLLOWING
+            self.ghost_bot = False
             self.wait_start_time = None
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER

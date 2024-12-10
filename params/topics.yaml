@@ -1,5 +1,8 @@
 pub: # Published topics
-  lane_following: /quack_man/lane_following
+  # lane_following: /quack_man/lane_following
+  lane_following: /joy_mapper_node/joystick_override # add vehicle name in front
+  wheel_command: /wheels_driver_node/wheels_cmd
+
   x_sec_go: /quack_man/x_sec_go
   game_over: /quack_man/game_over
   game_state: /quack_man/game_state

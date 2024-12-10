@@ -77,3 +77,9 @@ The node listens on these channels
 - `checkpoint_timeout`
 - `game_over`
 and informs the game master if all checkpoints were collected, the QuackMan achieved a new score, or the QuackMan was detected by a GhostBot and the game is over (when running on the appropriate bot type).
+
+## docker run command
+Replace the `ROBOT_HOSTNAME` with your actual robot name.
+``` bash
+docker run -it --rm --name=lane-following --net host --privileged  --memory "800m" --memory-swap="2800m" -v /data:/data -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket duckietown/dt-core:daffy-arm64v8 roslaunch duckietown_demos lane_following.launch veh:=ROBOT_HOSTNAME
+```

@@ -1,5 +1,7 @@
 from enum import IntEnum
 import time
+from typing import Callable
+
 
 class State(IntEnum):
     IDLE = 0
@@ -15,7 +17,7 @@ TRAFFIC_WAIT_TIME_S = 5
 X_SEC_WAIT_TIME_S = 5
 
 class StateMachine:
-    def __init__(self, priority: bool):
+    def __init__(self, priority: bool, lane_following_cb : Callable[[bool], None]):
         self.start: bool = False
         self.game_over: bool = False
         self.game_won: bool = False
@@ -29,6 +31,8 @@ class StateMachine:
         self.wait_start_time = None
 
         self.state: State = State.IDLE
+
+        self.lane_following_cb = lane_following_cb
     
 
     def step(self):
@@ -51,25 +55,26 @@ class StateMachine:
     
     def get_outputs(self):
         if self.state == State.IDLE:
-            return {"lf": False, "x-sec-go": False, "game-over": False}
+            return {"x-sec-go": False, "game-over": False}
         if self.state == State.LANE_FOLLOWING:
-            return {"lf": True, "x-sec-go": False, "game-over": False}
+            return {"x-sec-go": False, "game-over": False}
         if self.state == State.WAIT_TRAFFIC:
-            return {"lf": False, "x-sec-go": False, "game-over": False}
+            return {"x-sec-go": False, "game-over": False}
         if self.state == State.X_SEC_NAV:
-            return {"lf": False, "x-sec-go": True, "game-over": False}
+            return {"x-sec-go": True, "game-over": False}
         if self.state == State.WAIT_X_SEC:
-            return {"lf": False, "x-sec-go": False, "game-over": False}
+            return {"x-sec-go": False, "game-over": False}
         if self.state == State.GAME_OVER:
-            return {"lf": False, "x-sec-go": False, "game-over": True}
+            return {"x-sec-go": False, "game-over": True}
         if self.state == State.GAME_WON:
-            return {"lf": False, "x-sec-go": False, "game-over": False}
+            return {"x-sec-go": False, "game-over": False}
     
     def handle_idle(self):
         next_state = State.IDLE
         if self.start:
             # TODO: check if quackman detected?
             next_state = State.LANE_FOLLOWING
+            self.lane_following_cb(True)
         return next_state
 
     def handle_lf(self):
@@ -78,13 +83,17 @@ class StateMachine:
             next_state = State.X_SEC_NAV
             self.x_sec_navigating = True
             self.x_sec = False
+            self.lane_following_cb(False)
         if self.ghost_bot_b:
             next_state = State.WAIT_TRAFFIC
             self.wait_start_time = time.time()
+            self.lane_following_cb(False)
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
+            self.lane_following_cb(False)
         if self.game_won:
             next_state = State.GAME_WON
+            self.lane_following_cb(False)
         return next_state
 
     def handle_wait_traffic(self):
@@ -93,6 +102,7 @@ class StateMachine:
             next_state = State.LANE_FOLLOWING
             self.ghost_bot_b = False
             self.wait_start_time = None
+            self.lane_following_cb(True)
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         if self.game_won:
@@ -107,6 +117,7 @@ class StateMachine:
             self.wait_start_time = time.time()
         if not self.x_sec_navigating:
             next_state = State.LANE_FOLLOWING
+            self.lane_following_cb(True)
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         if self.game_won:

@@ -3,7 +3,9 @@
 
     <!-- Define the paths to the parameter files -->
     <arg name="topics_param_file_name" default="$(find state_controller)/params/topics.yaml"/>
+    <arg name="vehicle_name" default="$(env VEHICLE_NAME)" />
 
+    <param name="~vehicle_name" value="$(arg vehicle_name)" />
     <param name="~priority" value="True" />
 
     <!-- Launch the exercise node, loading the specified parameter files (.yaml) -->

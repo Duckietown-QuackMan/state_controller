@@ -2,6 +2,8 @@
 
 import rospy
 from std_msgs.msg import Bool, String
+from duckietown_msgs.msg import BoolStamped, WheelsCmdStamped
+
 
 from state_machine_impl import StateMachine
 
@@ -10,14 +12,13 @@ class StateMachineNode:
     def __init__(self):
         self.setup_params()
 
-        self.state_machine = StateMachine(self.priority)
+        self.state_machine = StateMachine(self.priority, self.set_lane_following)
 
         self.setup_publishers_and_subscribers()
         step_timer = rospy.Timer(rospy.Duration(1), self.step)
 
     def step(self, _event):
         outputs = self.state_machine.step()
-        self.pub_lane_following.publish(Bool(outputs["lf"]))
         self.pub_x_sec_go.publish(Bool(outputs["x-sec-go"]))
         self.pub_game_over.publish(Bool(outputs["game-over"]))
     
@@ -50,6 +51,7 @@ class StateMachineNode:
                 raise KeyError(txt_error)
             return param
         self.priority = get_rosparam("~priority")
+        self.vehicle_name = get_rosparam("~vehicle_name")
         # topics params
         self.name_sub_game_state = get_rosparam("~topics/sub/game_state")
         self.name_sub_ghost_bot = get_rosparam("~topics/sub/ghost_bot")
@@ -58,7 +60,8 @@ class StateMachineNode:
         self.name_sub_x_sec = get_rosparam("~topics/sub/x_sec")
         self.name_sub_x_sec_navigating = get_rosparam("~topics/sub/x_sec_navigating")
 
-        self.name_pub_lane_following = get_rosparam("~topics/pub/lane_following")
+        self.name_pub_lane_following = self.vehicle_name + get_rosparam("~topics/pub/lane_following")
+        self.name_pub_wheel_command = self.vehicle_name + get_rosparam("~topics/pub/wheel_command")
         self.name_pub_x_sec_go = get_rosparam("~topics/pub/x_sec_go")
         self.name_pub_game_over = get_rosparam("~topics/pub/game_over")
         
@@ -73,7 +76,9 @@ class StateMachineNode:
         self.sub_x_sec            = rospy.Subscriber(self.name_sub_x_sec,            Bool,   self.x_sec_cb,            queue_size=10)
         self.sub_x_sec_navigating = rospy.Subscriber(self.name_sub_x_sec_navigating, Bool,   self.x_sec_navigating_cb, queue_size=10)
 
-        self.pub_lane_following = rospy.Publisher(self.name_pub_lane_following, Bool, queue_size=10)
+        self.pub_lane_following = rospy.Publisher(self.name_pub_lane_following, BoolStamped, queue_size=10)
+        self.pub_wheel_command = rospy.Publisher(self.name_pub_wheel_command, WheelsCmdStamped, queue_size=10)
+
         self.pub_x_sec_go       = rospy.Publisher(self.name_pub_x_sec_go,       Bool, queue_size=10)
         self.pub_game_over      = rospy.Publisher(self.name_pub_game_over,      Bool, queue_size=10)
 
@@ -94,6 +99,13 @@ class StateMachineNode:
 
     def x_sec_navigating_cb(self, msg):
         self.state_machine.set_x_sec_navigating(msg.data)
+    
+    def set_lane_following(self, val: bool):
+        if val:
+            self.pub_lane_following.publish(BoolStamped(header=rospy.Header(), data=False))
+        else:
+            self.pub_lane_following.publish(BoolStamped(header=rospy.Header(), data=True))
+            self.pub_wheel_command.publish(WheelsCmdStamped(header=rospy.Header(), vel_left=0.0, vel_right=0.0))
 
 
 

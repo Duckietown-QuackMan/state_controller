@@ -69,18 +69,18 @@ class StateMachineNode:
         """
         Setup the ROS publishers and subscribers for the node.
         """
-        self.sub_game_state       = rospy.Subscriber(self.name_sub_game_state,       String, self.game_state_cb,       queue_size=10)
-        self.sub_ghost_bot        = rospy.Subscriber(self.name_sub_ghost_bot,        Bool,   self.ghost_bot_cb,        queue_size=10)
-        self.sub_ghost_bot_b      = rospy.Subscriber(self.name_sub_ghost_bot_b,      Bool,   self.ghost_bot_b_cb,      queue_size=10)
-        self.sub_quack_man        = rospy.Subscriber(self.name_sub_quack_man,        Bool,   self.quack_man_cb,        queue_size=10)
-        self.sub_x_sec            = rospy.Subscriber(self.name_sub_x_sec,            Bool,   self.x_sec_cb,            queue_size=10)
-        self.sub_x_sec_navigating = rospy.Subscriber(self.name_sub_x_sec_navigating, Bool,   self.x_sec_navigating_cb, queue_size=10)
+        self.sub_game_state       = rospy.Subscriber(self.name_sub_game_state,       String, self.game_state_cb,       queue_size=1)
+        self.sub_ghost_bot        = rospy.Subscriber(self.name_sub_ghost_bot,        Bool,   self.ghost_bot_cb,        queue_size=1)
+        self.sub_ghost_bot_b      = rospy.Subscriber(self.name_sub_ghost_bot_b,      Bool,   self.ghost_bot_b_cb,      queue_size=1)
+        self.sub_quack_man        = rospy.Subscriber(self.name_sub_quack_man,        Bool,   self.quack_man_cb,        queue_size=1)
+        self.sub_x_sec            = rospy.Subscriber(self.name_sub_x_sec,            Bool,   self.x_sec_cb,            queue_size=1)
+        self.sub_x_sec_navigating = rospy.Subscriber(self.name_sub_x_sec_navigating, Bool,   self.x_sec_navigating_cb, queue_size=1)
 
-        self.pub_lane_following = rospy.Publisher(self.name_pub_lane_following, BoolStamped, queue_size=10)
-        self.pub_wheel_command = rospy.Publisher(self.name_pub_wheel_command, WheelsCmdStamped, queue_size=10)
+        self.pub_lane_following = rospy.Publisher(self.name_pub_lane_following, BoolStamped, queue_size=1)
+        self.pub_wheel_command = rospy.Publisher(self.name_pub_wheel_command, WheelsCmdStamped, queue_size=1)
 
-        self.pub_x_sec_go       = rospy.Publisher(self.name_pub_x_sec_go,       Bool, queue_size=10)
-        self.pub_game_over      = rospy.Publisher(self.name_pub_game_over,      Bool, queue_size=10)
+        self.pub_x_sec_go       = rospy.Publisher(self.name_pub_x_sec_go,       Bool, queue_size=1)
+        self.pub_game_over      = rospy.Publisher(self.name_pub_game_over,      Bool, queue_size=1)
 
     def game_state_cb(self, msg):
         self.state_machine.set_game_state(msg.data)

@@ -68,12 +68,12 @@ class GameMasterConnectorNode:
         """
         Setup the ROS publishers and subscribers for the node
         """
-        self.sub_all_checkpoints_collected = rospy.Subscriber(self.name_sub_all_checkpoints_collected, Bool, self.all_chekpoints_collected_cb, queue_size=10)
-        self.sub_score_update = rospy.Subscriber(self.name_sub_score_update, Int32, self.score_update_cb, queue_size=10)
-        self.sub_checkpoint_timeout = rospy.Subscriber(self.name_sub_checkpoint_timeout, Bool, self.checkpoint_timeout_cb, queue_size=10)
-        self.sub_game_over = rospy.Subscriber(self.name_sub_game_over, Bool, self.game_over_cb, queue_size=10)
+        self.sub_all_checkpoints_collected = rospy.Subscriber(self.name_sub_all_checkpoints_collected, Bool, self.all_chekpoints_collected_cb, queue_size=1)
+        self.sub_score_update = rospy.Subscriber(self.name_sub_score_update, Int32, self.score_update_cb, queue_size=1)
+        self.sub_checkpoint_timeout = rospy.Subscriber(self.name_sub_checkpoint_timeout, Bool, self.checkpoint_timeout_cb, queue_size=1)
+        self.sub_game_over = rospy.Subscriber(self.name_sub_game_over, Bool, self.game_over_cb, queue_size=1)
 
-        self.pub_game_state = rospy.Publisher(self.name_pub_game_state, String, queue_size=10)
+        self.pub_game_state = rospy.Publisher(self.name_pub_game_state, String, queue_size=1)
     
     def game_state_update_cb(self, game_state: str) -> None:
         print(f"Game state update: {game_state}")

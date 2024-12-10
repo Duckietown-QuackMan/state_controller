@@ -79,13 +79,13 @@ class QMStateMachineNode:
         """
         Setup the ROS publishers and subscribers for the node.
         """
-        self.sub_game_state       = rospy.Subscriber(self.name_sub_game_state,      String,  self.game_state_cb,      queue_size=10)
-        self.sub_checkpoint       = rospy.Subscriber(self.name_sub_checkpoint,      Int32,  self.cb_checkpoint,                     queue_size=10)
+        self.sub_game_state       = rospy.Subscriber(self.name_sub_game_state,      String,  self.game_state_cb,      queue_size=1)
+        self.sub_checkpoint       = rospy.Subscriber(self.name_sub_checkpoint,      Int32,  self.cb_checkpoint,                     queue_size=1)
 
-        self.pub_score_updates = rospy.Publisher(self.name_pub_score_updates,       Int32,                                          queue_size=10)
-        self.pub_all_checkpoints_collected = rospy.Publisher(self.name_pub_all_checkpoints_collected,       Bool,                   queue_size=10)
-        self.pub_cp_timeout      = rospy.Publisher(self.name_pub_cp_timeout,          Bool,                                           queue_size=10)
-        # self.pub_quackman_found = rospy.Publisher(self.name_pub_quackman_found,       Bool,                                           queue_size=10)
+        self.pub_score_updates = rospy.Publisher(self.name_pub_score_updates,       Int32,                                          queue_size=1)
+        self.pub_all_checkpoints_collected = rospy.Publisher(self.name_pub_all_checkpoints_collected,       Bool,                   queue_size=1)
+        self.pub_cp_timeout      = rospy.Publisher(self.name_pub_cp_timeout,          Bool,                                           queue_size=1)
+        # self.pub_quackman_found = rospy.Publisher(self.name_pub_quackman_found,       Bool,                                           queue_size=1)
 
 
     def cb_checkpoint(self, msg: int) -> None:

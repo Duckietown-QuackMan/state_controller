@@ -8,10 +8,10 @@ from state_machine_impl import StateMachine
 class StateMachineNode:
 
     def __init__(self):
-
-        self.state_machine = StateMachine()
-
         self.setup_params()
+
+        self.state_machine = StateMachine(self.priority)
+
         self.setup_publishers_and_subscribers()
         step_timer = rospy.Timer(rospy.Duration(1), self.step)
 
@@ -49,7 +49,7 @@ class StateMachineNode:
                 rospy.logerr(txt_error)
                 raise KeyError(txt_error)
             return param
-
+        self.priority = get_rosparam("~priority")
         # topics params
         self.name_sub_game_state = get_rosparam("~topics/sub/game_state")
         self.name_sub_ghost_bot = get_rosparam("~topics/sub/ghost_bot")

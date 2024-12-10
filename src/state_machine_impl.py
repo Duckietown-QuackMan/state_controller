@@ -15,7 +15,7 @@ TRAFFIC_WAIT_TIME_S = 5
 X_SEC_WAIT_TIME_S = 5
 
 class StateMachine:
-    def __init__(self):
+    def __init__(self, priority: bool):
         self.start: bool = False
         self.game_over: bool = False
         self.game_won: bool = False
@@ -24,6 +24,7 @@ class StateMachine:
         self.quack_man: bool = False
         self.x_sec: bool = False
         self.x_sec_navigating: bool = False
+        self.priority = priority
 
         self.wait_start_time = None
 
@@ -141,11 +142,14 @@ class StateMachine:
             self.game_won = True
 
     def set_ghost_bot(self, val: bool) -> None:
+        if self.priority:
+            return
         if self.state == State.X_SEC_NAV or self.state == State.WAIT_X_SEC:
             self.ghost_bot = val
 
     def set_ghost_bot_b(self, val: bool) -> None:
-        self.ghost_bot_b = val
+        if self.state == State.LANE_FOLLOWING or self.state == State.WAIT_TRAFFIC:
+            self.ghost_bot_b = val
 
     def set_quack_man(self, val: bool) -> None:
         self.quack_man = val

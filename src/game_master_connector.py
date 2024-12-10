@@ -45,12 +45,12 @@ class GameMasterConnectorNode:
                 rospy.logerr(txt_error)
                 raise KeyError(txt_error)
             return param
+        self.bot_type = rospy.get_param("~bot_type")
 
         self.vehicle_name = get_rosparam("~vehicle_name")
         
         # bot type config, either 'quackman' or 'ghostbot'
         # self.bot_type = get_rosparam("~bot_type")
-        self.bot_type = rospy.get_param("~bot_type")
 
 
         # game master config

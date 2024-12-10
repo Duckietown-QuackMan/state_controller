@@ -22,8 +22,13 @@ class QMStateMachineNode:
         # TO ASK: 
         # - I think this may be redundant, as we can simply publish the state of the game in the cb_checkpoint
         # RESOLVED:I think that done this way is fine, as we can more easily differentiate parts
+        # - do we want to publish the score here or through the callback, upon checkpoint detection? 
         # TODO: - ONLY PUBLISH IF DIFFERENT FROM BEFORE
         self.pub_cp_timeout.publish(Bool(outputs["game-over"]))
+        # BUG A:
+        # - as it currently is, it works. BUT: we get the LEDS set to red, if the timeout is reached or if the quackamn is detected
+        # - this is because we are publishing the game-over state in both cases.
+        # - we need to find a way to differentiate between the two cases
         self.pub_all_checkpoints_collected.publish(Bool(outputs["game-won"]))
 
         # TODO: find a way to cleanly stop the game
@@ -67,6 +72,8 @@ class QMStateMachineNode:
         self.name_pub_score_updates = get_rosparam("~topics/pub/score_update")
         self.name_pub_all_checkpoints_collected = get_rosparam("~topics/pub/all_checkpoints_collected")
         self.name_pub_cp_timeout = get_rosparam("~topics/pub/checkpoint_timeout")
+        # self.name_pub_quackman_found = get_rosparam("~topics/pub/quack_man/quack_man")
+
         
     def setup_publishers_and_subscribers(self) -> None:
         """
@@ -78,6 +85,7 @@ class QMStateMachineNode:
         self.pub_score_updates = rospy.Publisher(self.name_pub_score_updates,       Int32,                                          queue_size=10)
         self.pub_all_checkpoints_collected = rospy.Publisher(self.name_pub_all_checkpoints_collected,       Bool,                   queue_size=10)
         self.pub_cp_timeout      = rospy.Publisher(self.name_pub_cp_timeout,          Bool,                                           queue_size=10)
+        # self.pub_quackman_found = rospy.Publisher(self.name_pub_quackman_found,       Bool,                                           queue_size=10)
 
 
     def cb_checkpoint(self, msg: int) -> None:
@@ -102,6 +110,8 @@ class QMStateMachineNode:
 
     def game_state_cb(self, msg: String) -> None:
         self.state_machine.set_game_state(msg.data)
+    
+
 
 
 if __name__ == "__main__":

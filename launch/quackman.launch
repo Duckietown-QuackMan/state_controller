@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <launch>
 
+    <!-- <include file="$(find state_controller)/launch/qm_state_machine.launch" />
+    <include file="$(find apriltag_detection)/launch/apriltag_detection.launch" />
+    <include file="$(find led_controller)/launch/led_controller.launch" />
+    <include file="$(find state_controller)/launch/game_master_connector_quackman.launch" /> -->
     <include file="$(find state_controller)/launch/qm_state_machine.launch" />
     <include file="$(find state_controller)/launch/game_master_connector_quackman.launch" />
     <include file="$(find apriltag_detection)/launch/apriltag_detection.launch" />

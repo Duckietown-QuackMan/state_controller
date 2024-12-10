@@ -8,7 +8,7 @@ class State(IntEnum):
     GAME_WON = 3
 
 # TODO: move these to a config file
-TIME_DELTA_CHECKPOINTS = 120
+TIME_DELTA_CHECKPOINTS = 1800
 TOTAL_CHECKPOINTS = 5
 
 
@@ -18,6 +18,10 @@ class QMStateMachine:
         self.start: bool = False
         self.cp_delta_time_elapsed: bool = False
         self.all_cp_detected: bool = False
+        # More generally, should be selg.game_over. This flag gets detected as the game master sends such a command
+        # since we know this command will only be sent to the quackman state machine when the quack man got detected,
+        #  we can call it detected
+        self.detected = False
 
         # internal state
         self.state: State = State.IDLE
@@ -53,7 +57,7 @@ class QMStateMachine:
             # TOASK: 
             # - do we want to also publish the score this way, or thorugh the callback, upon checkpoint detection?
             #   - this would mean we can streamline the cb_checkpoint. 
-            #       But this would mean we mustmake sure that the score is only published when it is updated, 
+            #       But this would mean we must make sure that the score is only published when it is updated, 
             #       and not every time the step function is called, such that the gamemaster is not overwhelmed with messages
             # - do we want to publish the fact that we are currently in idle or cp_detect state?
             return{"game-over": False, "game-won": False}#, "score": self.score}
@@ -66,21 +70,25 @@ class QMStateMachine:
           
     def handle_idle(self):
         next_state = State.IDLE
+
         if self.start:
             self.last_cp_time = time.time()
             next_state = State.CP_DETECTION
+        elif self.detected:
+            next_state = State.GAME_OVER
         return next_state
     
     def handle_cp_detection(self):
         next_state = State.CP_DETECTION
         curr_time = time.time()
-        # check if the time elapsed since the last checkpoint detection is greater than the threshold
         if self.score!= 0 and curr_time - self.last_cp_time > TIME_DELTA_CHECKPOINTS:
             self.cp_delta_time_elapsed = True 
         if self.cp_delta_time_elapsed:
             next_state = State.GAME_OVER
         elif self.all_cp_detected:
             next_state = State.GAME_WON
+        elif self.detected:
+            next_state = State.GAME_OVER
         return next_state
     
     def handle_game_over(self):
@@ -92,7 +100,17 @@ class QMStateMachine:
         return next_state  
     
     def set_game_state(self, val: str) -> None:
-        self.start = val == "RUNNING"
+        # self.start = val == "RUNNING"
+        if val == "RUNNING":
+            self.start = True
+        # BUG A:
+        # - as it currently is, it works. BUT: we get the LEDS set to red, if the timeout is reached or if the quackamn is detected
+        # - however, in the case the QM is detected, and thus the LEDs shoudl go red, they go red through the Cp_timeout callback, and we don't hve a dedicated function for this
+        # a fix to this would be to subscribe to the quackman topic in the LED_emitter , and set the LEDs to red in the callback
+        if val == "GAME_OVER":
+            self.detected = True
+        
+
 
     # TODO: 
     # - if we change the message type to stamped int and bool, we could use 
@@ -104,6 +122,8 @@ class QMStateMachine:
     # - we should maybe make sure that the checkpoints are not published at a too high frequency, 
     # or woudl this not be a problem?
     def set_cp_status(self, val: int) -> None:
+        if not self.start:
+            return
         curr_time = time.time()
         # check if the time elapsed since the last checkpoint detection is greater than the threshold
         if self.score!= 0 and curr_time - self.last_cp_time > TIME_DELTA_CHECKPOINTS:

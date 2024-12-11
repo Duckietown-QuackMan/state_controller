@@ -2,8 +2,10 @@
 <launch>
 
     <include file="$(find state_controller)/launch/gb_secondary_state_machine.launch" />
-    <include file="$(find state_controller)/launch/game_master_connector_ghostbot.launch" />
+    <include file="$(find x_sec_driving)/launch/x_sec_detection.launch" />
+    <include file="$(find x_sec_driving)/launch/x_sec_navigation.launch" />
     <include file="$(find apriltag_detection)/launch/apriltag_detection.launch" />
     <include file="$(find led_controller)/launch/led_controller.launch" />
+    <include file="$(find state_controller)/launch/game_master_connector_ghostbot.launch" />
 
 </launch>

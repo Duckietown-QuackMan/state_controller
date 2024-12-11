@@ -83,3 +83,22 @@ Replace the `ROBOT_HOSTNAME` with your actual robot name.
 ``` bash
 docker run -it --rm --name=lane-following --net host --privileged  --memory "800m" --memory-swap="2800m" -v /data:/data -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket duckietown/dt-core:daffy-arm64v8 roslaunch duckietown_demos lane_following.launch veh:=ROBOT_HOSTNAME
 ```
+### Adjusting the lane following robot speed
+1. Create a directory and file for the parameters you want to replace
+Run the following # (IN SSH Terminal on your robot, not main-workspace)
+
+``` bash
+mkdir -p ~/lane_control
+touch ~/lane_control/default.yaml
+```
+2. copy the default parameters to the file, and edit the values you want to change. https://github.com/duckietown/dt-core/blob/daffy/packages/lane_control/config/lane_controller_node/default.yaml
+
+3. Start the lane-following container again, with the command (the only extra section mounts the newly edited parameters file inside the container)
+``` bash
+ docker run \
+ -it --rm --name=lane-following --net host --privileged --memory "800m" --memory-swap="2800m" \
+ -v /data:/data -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
+ -v /home/duckie/lane_control/default.yaml:/code/catkin_ws/src/dt-core/packages/lane_control/config/lane_controller_node/default.yaml \
+ duckietown/dt-core:daffy-arm64v8 \
+ roslaunch duckietown_demos lane_following.launch veh:=ROBOT_HOSTNAME
+```

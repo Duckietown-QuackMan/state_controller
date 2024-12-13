@@ -15,7 +15,7 @@ class StateMachineNode:
         self.state_machine = StateMachine(self.priority, self.set_lane_following)
 
         self.setup_publishers_and_subscribers()
-        step_timer = rospy.Timer(rospy.Duration(1), self.step)
+        step_timer = rospy.Timer(rospy.Duration(0.1), self.step)
 
     def step(self, _event):
         outputs = self.state_machine.step()

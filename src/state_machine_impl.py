@@ -21,7 +21,6 @@ class StateMachine:
         self.start: bool = False
         self.game_over: bool = False
         self.game_won: bool = False
-        self.ghost_bot: bool = False
         self.ghost_bot_b: bool = False
         self.quack_man: bool = False
         self.x_sec: bool = False
@@ -80,9 +79,9 @@ class StateMachine:
     def handle_lf(self):
         next_state = State.LANE_FOLLOWING
         if self.x_sec:
-            next_state = State.X_SEC_NAV
-            self.x_sec_navigating = True
+            next_state = State.WAIT_X_SEC
             self.x_sec = False
+            self.wait_start_time = time.time()
             self.lane_following_cb(False)
         if self.ghost_bot_b:
             next_state = State.WAIT_TRAFFIC
@@ -112,9 +111,6 @@ class StateMachine:
 
     def handle_x_sec_nav(self):
         next_state = State.X_SEC_NAV
-        if self.ghost_bot:
-            next_state = State.WAIT_X_SEC
-            self.wait_start_time = time.time()
         if not self.x_sec_navigating:
             next_state = State.LANE_FOLLOWING
             self.lane_following_cb(True)
@@ -128,7 +124,6 @@ class StateMachine:
         next_state = State.WAIT_X_SEC
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.X_SEC_NAV
-            self.ghost_bot = False
             self.wait_start_time = None
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
@@ -155,8 +150,8 @@ class StateMachine:
     def set_ghost_bot(self, val: bool) -> None:
         if self.priority:
             return
-        if self.state == State.X_SEC_NAV or self.state == State.WAIT_X_SEC:
-            self.ghost_bot = val
+        if self.state == State.WAIT_X_SEC:
+            self.wait_start_time = time.time()
 
     def set_ghost_bot_b(self, val: bool) -> None:
         if self.state == State.LANE_FOLLOWING or self.state == State.WAIT_TRAFFIC:

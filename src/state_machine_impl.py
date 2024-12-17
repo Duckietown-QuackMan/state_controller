@@ -161,7 +161,8 @@ class StateMachine:
         self.quack_man = val
 
     def set_x_sec(self, val: bool) -> None:
-        self.x_sec = val
+        if self.state == State.LANE_FOLLOWING:
+            self.x_sec = val
 
     
     def set_x_sec_navigating(self, val: bool) -> None:

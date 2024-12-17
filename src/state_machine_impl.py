@@ -29,6 +29,8 @@ class StateMachine:
 
         self.wait_start_time = None
 
+        self.timeout_gameover = False
+
         self.x_sec_nav_stop_time = 0
 
         self.state: State = State.IDLE
@@ -66,7 +68,7 @@ class StateMachine:
         if self.state == State.WAIT_X_SEC:
             return {"x-sec-go": False, "game-over": False}
         if self.state == State.GAME_OVER:
-            return {"x-sec-go": False, "game-over": True}
+            return {"x-sec-go": False, "game-over": True and (not self.timeout_gameover)}
         if self.state == State.GAME_WON:
             return {"x-sec-go": False, "game-over": False}
     
@@ -138,6 +140,7 @@ class StateMachine:
 
     def handle_game_over(self):
         next_state = State.GAME_OVER
+        self.lane_following_cb(False)
         return next_state
 
     def handle_game_won(self):
@@ -148,6 +151,7 @@ class StateMachine:
         if val == "RUNNING":
             self.start = True
         elif val == "GAME_OVER":
+            self.timeout_gameover = (self.state != State.GAME_OVER)
             self.game_over = True
         elif val == "GAME_WON":
             self.game_won = True

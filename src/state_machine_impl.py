@@ -125,6 +125,7 @@ class StateMachine:
     
     def handle_x_sec_wait(self):
         next_state = State.WAIT_X_SEC
+        self.lane_following_cb(False)
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.X_SEC_NAV
             self.x_sec_navigating = True

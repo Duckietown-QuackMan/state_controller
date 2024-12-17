@@ -125,7 +125,7 @@ description of the nodes inside the package
 #### State machine
 #### Topics
 
-### node 2
+### NODE 2 NAME
 ### ...
 ## Instructions
 ### Requirements

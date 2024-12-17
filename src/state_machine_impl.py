@@ -151,7 +151,8 @@ class StateMachine:
         if val == "RUNNING":
             self.start = True
         elif val == "GAME_OVER":
-            self.timeout_gameover = (self.state != State.GAME_OVER)
+            self.timeout_gameover = self.timeout_gameover or (self.state != State.GAME_OVER)
+            print(f"timeout_gameover: {self.timeout_gameover}")
             self.game_over = True
         elif val == "GAME_WON":
             self.game_won = True

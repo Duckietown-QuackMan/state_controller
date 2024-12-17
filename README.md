@@ -24,7 +24,6 @@ xn -- !XSecNavigating --> lf
 i -- start --> lf
 wx -- QuackMan, GameOver --> go
 xn -- QuackMan, GameOver --> go
-i -- QuackMan --> go
 lf -- QuackMan, GameOver --> go
 wt -- QuackMan, GameOver --> go
 go --> go

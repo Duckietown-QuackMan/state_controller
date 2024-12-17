@@ -4,11 +4,10 @@ ROS package for high level control of the GhostBots.
 ## Nodes
 These package consists of the following nodes, each having a specific functionality.
 
-### StateMachine
-The state machine node is responsible to manage the state of the duckied and send out commands to other nodes depending on the current state.
-Two different state machines are implemtned. One for the GhostBot and one for the QuackMan.
-#### GhostBot 
-This diagram shows the state machine implemented in the "qm_state_machine" node.
+### state_machine
+The state machine node is responsible to manage the state of the GhostBots and send out commands to other nodes depending on the current state.
+
+This diagram shows the state machine implemented in the "state_machine" node.
 ```mermaid
 graph LR;
 wx(wait x-sec)
@@ -25,13 +24,11 @@ xn -- !XSecNavigating --> lf
 i -- start --> lf
 wx -- QuackMan, GameOver --> go
 xn -- QuackMan, GameOver --> go
-i -- QuackMan, GameOver --> go
 lf -- QuackMan, GameOver --> go
 wt -- QuackMan, GameOver --> go
 go --> go
 wx -- GameWon --> gw
 xn -- GameWon --> gw
-i -- GameWon --> gw
 lf -- GameWon --> gw
 wt -- GameWon --> gw
 gw --> gw
@@ -63,7 +60,22 @@ The node will send out boolean flag commands on these channels
 - `game_over`, if set to true the QuackMan was detected and the game is over
 
 To run the test cases execute `python -m unittest discover tests` at the project root.
+### qm_state_machine
+This node is responsible to manage the state of the QuackMan and send out commands to other nodes depending on the current state.
 
+This diagram shows the state machine implemented in the "qm_state_machine" node.
+```mermaid
+graph LR;
+cd(checkpoint detection)
+go(game-over)
+gw(game-won)
+i(idle)
+i -- start --> cd
+cd -- timeout, detected --> go
+cd -- collected all checkpoint --> gw
+gw --> gw
+go --> go
+```
 ### GameMasterConnector
 This node is responsible for the communication with the game master.
 It is reusable for the GhostBots and the QuackMan by starting it with the appropriate launch file.

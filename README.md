@@ -4,9 +4,11 @@ ROS package for high level control of the GhostBots.
 ## Nodes
 These package consists of the following nodes, each having a specific functionality.
 
-### GhostBot StateMachine
-The state machine node is responsible to manage the state of the GhostBot and send out commands to other nodes depending on the current state.
-This diagram shows the state machine implemented in the node.
+### StateMachine
+The state machine node is responsible to manage the state of the duckied and send out commands to other nodes depending on the current state.
+Two different state machines are implemtned. One for the GhostBot and one for the QuackMan.
+#### GhostBot 
+This diagram shows the state machine implemented in the "qm_state_machine" node.
 ```mermaid
 graph LR;
 wx(wait x-sec)

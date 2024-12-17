@@ -29,6 +29,8 @@ class StateMachine:
 
         self.wait_start_time = None
 
+        self.x_sec_nav_stop_time = 0
+
         self.state: State = State.IDLE
 
         self.lane_following_cb = lane_following_cb
@@ -114,6 +116,7 @@ class StateMachine:
         if not self.x_sec_navigating:
             next_state = State.LANE_FOLLOWING
             self.lane_following_cb(True)
+            self.x_sec_nav_stop_time = time.time()
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
         if self.game_won:
@@ -162,7 +165,7 @@ class StateMachine:
         self.quack_man = val
 
     def set_x_sec(self, val: bool) -> None:
-        if self.state == State.LANE_FOLLOWING:
+        if (self.state == State.LANE_FOLLOWING) and (time.time() - self.x_sec_nav_stop_time >= 1.5):
             self.x_sec = val
 
     

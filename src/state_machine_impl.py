@@ -145,6 +145,7 @@ class StateMachine:
 
     def handle_game_won(self):
         next_state = State.GAME_WON
+        self.lane_following_cb(False)
         return next_state
 
     def set_game_state(self, val: str) -> None:

@@ -116,3 +116,18 @@ touch ~/lane_control/default.yaml
  duckietown/dt-core:daffy-arm64v8 \
  roslaunch duckietown_demos lane_following.launch veh:=ROBOT_HOSTNAME
 ```
+
+STRUCTURE
+# ROS PACKAGE NAME
+## Nodes
+description of the nodes inside the package
+### NODE 1 NAME
+#### State machine
+#### Topics
+
+### node 2
+### ...
+## Instructions
+### Requirements
+### Misc
+

@@ -124,6 +124,7 @@ class StateMachine:
         next_state = State.WAIT_X_SEC
         if self.wait_start_time + TRAFFIC_WAIT_TIME_S < time.time():
             next_state = State.X_SEC_NAV
+            self.x_sec_navigating = True
             self.wait_start_time = None
         if self.quack_man or self.game_over:
             next_state = State.GAME_OVER
@@ -166,6 +167,7 @@ class StateMachine:
 
     
     def set_x_sec_navigating(self, val: bool) -> None:
+        print(f"setting x-sec-navigating flag through cb to: {val}")
         self.x_sec_navigating = val
 
     

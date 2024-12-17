@@ -72,12 +72,11 @@ go(game-over)
 gw(game-won)
 i(idle)
 i -- start --> cd
-cd -- timeout --> go
+cd -- timeout, detected --> go
 cd -- collected all checkpoint --> gw
 gw --> gw
 go --> go
 ```
-:exclamation: maybe add as a transition state when quackman is detected by ghostbots
 ### GameMasterConnector
 This node is responsible for the communication with the game master.
 It is reusable for the GhostBots and the QuackMan by starting it with the appropriate launch file.

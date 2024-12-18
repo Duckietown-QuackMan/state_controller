@@ -71,7 +71,7 @@ cd -- collected all checkpoint --> gw
 gw --> gw
 go --> go
 ```
-### GameMasterConnector
+### game_master_connector
 This node is responsible for the communication with the game master.
 It is reusable for the GhostBots and the QuackMan by starting it with the appropriate launch file.
 - `game_master_connector_quackmann.launch`
@@ -140,3 +140,6 @@ After the preparations are done and the game master and lane following container
 - GhostBot 2: `roslaunch state_controller ghostbot_secondary.launch`
 
 Have fun playing the QuackMan game!
+
+## Demo
+Video recording of each functionnality of the QuackMan game may be found in this [repository](https://ethz-my.sharepoint.com/:f:/g/personal/cormond_ethz_ch/EouKoV57MIZMunmnNR6zZwEBwZPoDpa4g1f5z6OWTcCZWw?e=avCZ1q)

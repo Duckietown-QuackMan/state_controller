@@ -4,7 +4,7 @@ ROS package for high level control of the GhostBots.
 ## Nodes
 These package consists of the following nodes, each having a specific functionality.
 
-### state_machine
+### GhostBot state_machine
 The state machine node is responsible to manage the state of the GhostBots and send out commands to other nodes depending on the current state.
 
 This diagram shows the state machine implemented in the "state_machine" node.
@@ -18,8 +18,8 @@ gw(game-won)
 i(idle)
 wt(wait-traffic)
 lf -- "GhostBot b" --> wt --> lf
-lf -- x-sec --> xn
-xn -- "GhostBot" --> wx --> xn
+lf -- x-sec --> wx
+wx --> xn
 xn -- !XSecNavigating --> lf
 i -- start --> lf
 wx -- QuackMan, GameOver --> go
@@ -33,11 +33,6 @@ lf -- GameWon --> gw
 wt -- GameWon --> gw
 gw --> gw
 ```
-:exclamation: add `game_state` (received from game master) transitions to game over
-
-:exclamation: add `game-won` state
-
-:warning: Consider transitions from lane following to wait states
 
 The node is listening on these channels for boolean flags for the inputs
 - `ghost_bot`
@@ -90,44 +85,58 @@ The node listens on these channels
 - `score_update`
 - `checkpoint_timeout`
 - `game_over`
+
 and informs the game master if all checkpoints were collected, the QuackMan achieved a new score, or the QuackMan was detected by a GhostBot and the game is over (when running on the appropriate bot type).
 
-## docker run command
+The communicate with the game master two python packages are required:
+- `websocket-client`: provides a nice interface for websocket communication
+- `rel`: to handle the websocket connections in the background
+
+
+
+## Instructions
+To run the QuackMan game you need 3 duckies and one external computer to run the game master.
+
+### Game Master
+On the external computer the [game master](https://github.com/Duckietown-QuackMan/game_master) has to be downloaded. It requires Java 21 and maven. By default the game master expects 2 GhostBots and 1 QuackMan. The number of expected GhostBots can be changed in the `src/main/java/ch/quack/man/Main.java` file if necessary.
+To run the game master execute the following commands in the game master directory.
+```bash
+mvn clean package
+java -jar target/game_master-1.0-SNAPSHOT.jar 
+```
+
+### Bots (GhostBots and QuackMan)
+The GhostBot depends on these ros packages which have to be downloaded and built on the robot.
+- [state_controller](https://github.com/Duckietown-QuackMan/state_controller)
+- [x-sec-driving](https://github.com/Duckietown-QuackMan/x-sec-driving)
+- [apriltag_detection](https://github.com/Duckietown-QuackMan/apriltag_detection)
+- [LED_controller](https://github.com/Duckietown-QuackMan/LED_controller)
+
+For each package python dependencies have to be installed if there exists a requirements file in the `src` directory, to do so go to the `src` folder of each package and execute:
+```bash
+pip install -r requirements.txt
+```
+That the Bots can communicate with the game master, the IP address of the external computer has to be set in the `state_controller` package to to so open the `src/params/game_master.yaml` file and fill in the IP address of the external computer in the `url` field, like this `ws://<IP_ADDRESS>:8025/ws`.
+
+Each bot has to be equiped with apriltags on each side like in these pictures, the apriltag ids for each bot are listed in the table below.
+![Apriltag palcement](media/ApriltagsFront.jpg)
+![Apriltag palcement](media/ApriltagsBack.jpg)
+
+| Bot        | Front | Left | Back | Right |
+| ---------- | ----- | ---- | ---- | ----- |
+| QuackMan   | 1     | 1    | 1    | 1     |
+| GhostBot 1 | 2     | 2    | 3    | 2     |
+| GhostBot 2 | 2     | 2    | 3    | 2     |
+
+Next the lane following container has to be started on both GhostBots.
 Replace the `ROBOT_HOSTNAME` with your actual robot name.
 ``` bash
 docker run -it --rm --name=lane-following --net host --privileged  --memory "800m" --memory-swap="2800m" -v /data:/data -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket duckietown/dt-core:daffy-arm64v8 roslaunch duckietown_demos lane_following.launch veh:=ROBOT_HOSTNAME
 ```
-### Adjusting the lane following robot speed
-1. Create a directory and file for the parameters you want to replace
-Run the following # (IN SSH Terminal on your robot, not main-workspace)
 
-``` bash
-mkdir -p ~/lane_control
-touch ~/lane_control/default.yaml
-```
-2. copy the default parameters to the file, and edit the values you want to change. https://github.com/duckietown/dt-core/blob/daffy/packages/lane_control/config/lane_controller_node/default.yaml
+After the preparations are done and the game master and lane following container is running each Bot can be started by first building and sourcing the ros packages `catkin build & source devel/setup.bash` and the executing the appropriate launch file for each bot.
+- QuackMan: `roslaunch state_controller quackman.launch`
+- GhostBot 1: `roslaunch state_controller ghostbot_priority.launch`
+- GhostBot 2: `roslaunch state_controller ghostbot_secondary.launch`
 
-3. Start the lane-following container again, with the command (the only extra section mounts the newly edited parameters file inside the container)
-``` bash
- docker run \
- -it --rm --name=lane-following --net host --privileged --memory "800m" --memory-swap="2800m" \
- -v /data:/data -v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
- -v /home/duckie/lane_control/default.yaml:/code/catkin_ws/src/dt-core/packages/lane_control/config/lane_controller_node/default.yaml \
- duckietown/dt-core:daffy-arm64v8 \
- roslaunch duckietown_demos lane_following.launch veh:=ROBOT_HOSTNAME
-```
-
-STRUCTURE
-# ROS PACKAGE NAME
-## Nodes
-description of the nodes inside the package
-### NODE 1 NAME
-#### State machine
-#### Topics
-
-### NODE 2 NAME
-### ...
-## Instructions
-### Requirements
-### Misc
-
+Have fun playing the QuackMan game!
